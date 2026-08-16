@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/* =============================================
+   OSMOSIS OPS - RETRO DESIGN SYSTEM
+   Color Palette: Warm Orange, Cream, Pink, White
+   Style: Retro Minimal + Glassmorphism + Playful
+   ============================================= */
+
+:root {
+  /* Core Palette */
+  --orange-hot: #FF6B35;
+  --orange-warm: #FF8C42;
+  --orange-light: #FFB085;
+  --orange-mellow: #FFC89E;
+
+  --pink-bold: #E05C8B;
+  --pink-soft: #F0839E;
+  --pink-light: #FFAABB;
+  --pink-blush: #FFD6E0;
+
+  --cream-dark: #F5E6D3;
+  --cream-base: #FFF5E4;
+  --cream-light: #FFFBF5;
+  --skin-deep: #E8C5A0;
+  --skin-warm: #D4A574;
+
+  --white-pure: #FFFFFF;
+  --white-warm: #FFFCF8;
+  --brown-deep: #2D1B0E;
+  --brown-mid: #5C3317;
+  --brown-text: #7A4528;
+
+  /* Semantic */
+  --bg-page: #FFF5E4;
+  --bg-card: rgba(255, 255, 255, 0.72);
+  --bg-glass: rgba(255, 245, 228, 0.55);
+  --border-warm: rgba(255, 107, 53, 0.3);
+  --border-crisp: rgba(255, 107, 53, 0.15);
+
+  /* Retro Shadow */
+  --shadow-orange: 4px 4px 0px rgba(255, 107, 53, 0.4);
+  --shadow-pink: 4px 4px 0px rgba(224, 92, 139, 0.3);
+  --shadow-hard: 3px 3px 0px #2D1B0E;
+}
+
+/* =============================================
+   BASE RESET & BODY
+   ============================================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: var(--bg-page);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(224, 92, 139, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 180, 130, 0.05) 0%, transparent 70%);
+  background-attachment: fixed;
+  color: var(--brown-deep);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  selection-background-color: var(--orange-hot);
+  selection-color: white;
+}
+
+::selection {
+  background-color: var(--orange-hot);
+  color: white;
+}
+
+/* Retro dot pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(180, 90, 40, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* =============================================
+   FONT UTILITIES
+   ============================================= */
+.font-retro { font-family: 'Space Mono', monospace; }
+.font-display { font-family: 'Syne', sans-serif; }
+.font-body { font-family: 'Space Grotesk', sans-serif; }
+
+/* =============================================
+   GLASSMORPHISM CARDS
+   ============================================= */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 24px rgba(255, 107, 53, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 -1px 0 rgba(255, 107, 53, 0.1) inset;
+}
+
+.glass-card-orange {
+  background: rgba(255, 107, 53, 0.08);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 107, 53, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.12);
+}
+
+.glass-card-pink {
+  background: rgba(224, 92, 139, 0.08);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(224, 92, 139, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(224, 92, 139, 0.12);
+}
+
+/* =============================================
+   RETRO BORDER STYLES (Hard Pixel Borders)
+   ============================================= */
+.retro-border {
+  border: 2px solid var(--brown-deep);
+  box-shadow: var(--shadow-orange);
+}
+
+.retro-border-pink {
+  border: 2px solid var(--brown-deep);
+  box-shadow: var(--shadow-pink);
+}
+
+/* =============================================
+   CUSTOM BUTTON STYLES
+   ============================================= */
+.btn-retro-orange {
+  background: linear-gradient(135deg, var(--orange-hot) 0%, var(--orange-warm) 100%);
+  border: 2px solid var(--brown-deep);
+  box-shadow: 3px 3px 0 var(--brown-deep);
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  transition: transform 0.1s, box-shadow 0.1s;
+  border-radius: 12px;
+}
+
+.btn-retro-orange:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--brown-deep);
+}
+
+.btn-retro-orange:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--brown-deep);
+}
+
+.btn-retro-pink {
+  background: linear-gradient(135deg, var(--pink-bold) 0%, var(--pink-soft) 100%);
+  border: 2px solid var(--brown-deep);
+  box-shadow: 3px 3px 0 var(--brown-deep);
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  transition: transform 0.1s, box-shadow 0.1s;
+  border-radius: 12px;
+}
+
+.btn-retro-pink:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--brown-deep);
+}
+
+.btn-retro-cream {
+  background: var(--cream-base);
+  border: 2px solid var(--brown-deep);
+  box-shadow: 3px 3px 0 var(--brown-deep);
+  color: var(--brown-deep);
+  font-weight: 700;
+  transition: transform 0.1s, box-shadow 0.1s;
+  border-radius: 12px;
+}
+
+.btn-retro-cream:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--brown-deep);
+}
+
+/* =============================================
+   RETRO TILE SECTION STYLES
+   ============================================= */
+.tile-glomerulus {
+  background: linear-gradient(135deg, rgba(255, 87, 87, 0.12), rgba(255, 140, 66, 0.08));
+  border: 1.5px solid rgba(220, 60, 60, 0.35);
+}
+
+.tile-proximal {
+  background: linear-gradient(135deg, rgba(255, 140, 66, 0.14), rgba(255, 180, 90, 0.08));
+  border: 1.5px solid rgba(255, 120, 40, 0.35);
+}
+
+.tile-henle {
+  background: linear-gradient(135deg, rgba(224, 180, 50, 0.14), rgba(255, 200, 80, 0.08));
+  border: 1.5px solid rgba(200, 160, 30, 0.35);
+}
+
+.tile-distal {
+  background: linear-gradient(135deg, rgba(40, 180, 120, 0.12), rgba(60, 210, 150, 0.06));
+  border: 1.5px solid rgba(30, 160, 100, 0.35);
+}
+
+.tile-bladder {
+  background: linear-gradient(135deg, rgba(60, 130, 220, 0.12), rgba(80, 160, 255, 0.07));
+  border: 1.5px solid rgba(50, 110, 200, 0.35);
+}
+
+/* =============================================
+   GAUGE BAR ANIMATIONS
+   ============================================= */
+@keyframes gaugeGlow {
+  0%, 100% { box-shadow: 0 0 6px rgba(255, 107, 53, 0.4); }
+  50% { box-shadow: 0 0 14px rgba(255, 107, 53, 0.7); }
+}
+
+.gauge-optimal {
+  animation: gaugeGlow 2s ease-in-out infinite;
+}
+
+/* =============================================
+   FLOATING PARTICLE ANIMATIONS
+   ============================================= */
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  100% { transform: translateY(-20px) rotate(15deg); opacity: 0; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-wiggle { animation: wiggle 1s ease-in-out infinite; }
+.animate-pop-in { animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* Shimmer text effect */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--orange-hot) 0%,
+    var(--pink-bold) 25%,
+    var(--orange-warm) 50%,
+    var(--pink-soft) 75%,
+    var(--orange-hot) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+/* =============================================
+   BADGE / TAG STYLES
+   ============================================= */
+.badge-orange {
+  background: rgba(255, 107, 53, 0.15);
+  border: 1.5px solid rgba(255, 107, 53, 0.4);
+  color: var(--brown-mid);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.badge-pink {
+  background: rgba(224, 92, 139, 0.12);
+  border: 1.5px solid rgba(224, 92, 139, 0.35);
+  color: var(--pink-bold);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.badge-cream {
+  background: var(--cream-dark);
+  border: 1.5px solid var(--skin-deep);
+  color: var(--brown-text);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+/* =============================================
+   SCROLLBAR STYLING
+   ============================================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 200, 160, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 53, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 53, 0.6);
+}
+
+/* =============================================
+   MODAL OVERLAY
+   ============================================= */
+.modal-overlay {
+  background: rgba(45, 27, 14, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* =============================================
+   RETRO DIVIDER
+   ============================================= */
+.retro-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--orange-light), var(--pink-light), var(--orange-light), transparent);
+  border: none;
+}
