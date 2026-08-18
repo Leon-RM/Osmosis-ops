@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { Player, Phase, GlobalEvent, QuizQuestion, SectionType, BoardTile } from './types/game';
 import { generateDynamicBoard, BASE_BOARD_TILES } from './data/boardData';
 import { QUIZ_QUESTIONS, getRandomizedQuizQuestion } from './data/quizData';
-import { GLOBAL_EVENTS } from './data/eventsData';
+import { GLOBAL_EVENTS, getSeededGlobalEvent } from './data/eventsData';
 import { sounds } from './utils/soundEffects';
 import {
   supabase,
@@ -227,15 +227,20 @@ export const App: React.FC = () => {
     addLog(`🚀 เริ่มต้นการเดินทางหน่วยไต [Room ${effectiveCode}] — สุ่มและซิงค์กระดานตรงกันทุกคนแล้ว!`);
     setIsHowToPlayOpen(true);
 
-    // Trigger Phase 1 Global Event
-    triggerGlobalEvent(initialPlayers, 0);
+    // Trigger Phase 1 Global Event (Synchronized across all players from Room Seed)
+    const initialEvent = getSeededGlobalEvent(effectiveCode, 1);
+    triggerGlobalEvent(initialPlayers, 0, initialEvent);
   };
 
   // ----------------------------------------------------
   // PHASE 1: GLOBAL EVENT
   // ----------------------------------------------------
-  const triggerGlobalEvent = (currentPlayersList?: Player[], activeIdx = currentPlayerIndex) => {
-    const event = GLOBAL_EVENTS[Math.floor(Math.random() * GLOBAL_EVENTS.length)];
+  const triggerGlobalEvent = (
+    currentPlayersList?: Player[],
+    activeIdx = currentPlayerIndex,
+    forcedEvent?: GlobalEvent
+  ) => {
+    const event = forcedEvent || GLOBAL_EVENTS[Math.floor(Math.random() * GLOBAL_EVENTS.length)];
     setCurrentEvent(event);
     setPhase('EVENT');
 

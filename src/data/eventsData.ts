@@ -62,3 +62,13 @@ export const GLOBAL_EVENTS: GlobalEvent[] = [
     icon: 'CloudRain'
   }
 ];
+
+export function getSeededGlobalEvent(seed: string, round = 1): GlobalEvent {
+  const seedStr = `${seed || 'OSMO88'}_ROUND_${round}`.toUpperCase();
+  let h = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    h = (Math.imul(31, h) + seedStr.charCodeAt(i)) | 0;
+  }
+  const index = Math.abs(h) % GLOBAL_EVENTS.length;
+  return GLOBAL_EVENTS[index];
+}
