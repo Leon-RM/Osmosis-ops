@@ -452,14 +452,31 @@ export const BASE_BOARD_TILES: BoardTile[] = [
   }
 ];
 
-// Random integer generator helper
-function randomBetween(min: number, max: number, step = 1): number {
-  const steps = Math.floor((max - min) / step);
-  return min + Math.floor(Math.random() * (steps + 1)) * step;
+// Deterministic Seedable PRNG (Mulberry32)
+function createPRNG(seedInput?: string | number) {
+  const seedStr = seedInput ? String(seedInput).trim().toUpperCase() : 'OSMOSIS_DEFAULT_SEED';
+  let h = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    h = (Math.imul(31, h) + seedStr.charCodeAt(i)) | 0;
+  }
+  let s = h ^ 0xdeadbeef;
+  return function next(): number {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-// Procedural Dynamic Board Generator
-export function generateDynamicBoard(): BoardTile[] {
+// Random integer generator helper using PRNG
+function randomBetween(min: number, max: number, step = 1, randFn: () => number = Math.random): number {
+  const steps = Math.floor((max - min) / step);
+  return min + Math.floor(randFn() * (steps + 1)) * step;
+}
+
+// Procedural Dynamic Board Generator (Synchronized across all clients via Room Seed)
+export function generateDynamicBoard(seed?: string | number): BoardTile[] {
+  const randFn = createPRNG(seed);
   return BASE_BOARD_TILES.map((base): BoardTile => {
     // Keep Tile 1 and Tile 40 intact
     if (base.tileId === 1 || base.tileId === 40) {
@@ -481,8 +498,8 @@ export function generateDynamicBoard(): BoardTile[] {
     // Section 1: Glomerulus (2-5)
     if (base.section === 'Glomerulus') {
       if (base.effectType === 'resource') {
-        const hChange = randomBetween(-8, 5, 2);
-        const sChange = randomBetween(-5, 5, 2);
+        const hChange = randomBetween(-8, 5, 2, randFn);
+        const sChange = randomBetween(-5, 5, 2, randFn);
         statChange.hydration = hChange;
         statChange.sodium = sChange;
         effectText = `${hChange >= 0 ? '+' : ''}${hChange} 💧 Hydration, ${sChange >= 0 ? '+' : ''}${sChange} 🧂 Sodium`;
@@ -492,8 +509,8 @@ export function generateDynamicBoard(): BoardTile[] {
     // Section 2: Proximal Tubule (6-15) - High Reabsorption variations
     else if (base.section === 'Proximal Tubule') {
       if (base.effectType === 'resource') {
-        const hChange = randomBetween(4, 14, 2);
-        const sChange = randomBetween(4, 14, 2);
+        const hChange = randomBetween(4, 14, 2, randFn);
+        const sChange = randomBetween(4, 14, 2, randFn);
         statChange.hydration = hChange;
         statChange.sodium = sChange;
         effectText = `ดูดกลับสารจำเป็น: +${hChange} 💧 น้ำ, +${sChange} 🧂 โซเดียม`;
@@ -504,13 +521,13 @@ export function generateDynamicBoard(): BoardTile[] {
     else if (base.section === 'Loop of Henle') {
       if (base.effectType === 'henle_even') {
         // Even tiles: descending water drain
-        const hDrain = randomBetween(-16, -6, 2);
+        const hDrain = randomBetween(-16, -6, 2, randFn);
         statChange.hydration = hDrain;
         statChange.sodium = 0;
         effectText = `ออสโมซิสระบายน้ำออก: ${hDrain} 💧 Hydration`;
       } else if (base.effectType === 'henle_odd') {
         // Odd tiles: ascending salt pumping drain
-        const sDrain = randomBetween(-16, -6, 2);
+        const sDrain = randomBetween(-16, -6, 2, randFn);
         statChange.hydration = 0;
         statChange.sodium = sDrain;
         effectText = `ปั๊มเกลือออกสู่เนื้อไต: ${sDrain} 🧂 Sodium`;
@@ -520,8 +537,8 @@ export function generateDynamicBoard(): BoardTile[] {
     // Section 4: Distal Tubule & Collecting Duct (26-35)
     else if (base.section === 'Distal Tubule & Collecting Duct') {
       if (base.effectType === 'resource') {
-        const hChange = randomBetween(-6, 12, 2);
-        const sChange = randomBetween(-6, 12, 2);
+        const hChange = randomBetween(-6, 12, 2, randFn);
+        const sChange = randomBetween(-6, 12, 2, randFn);
         statChange.hydration = hChange;
         statChange.sodium = sChange;
         effectText = `ปรับจูนสมดุลขั้นสุดท้าย: ${hChange >= 0 ? '+' : ''}${hChange} 💧, ${sChange >= 0 ? '+' : ''}${sChange} 🧂`;
@@ -531,8 +548,8 @@ export function generateDynamicBoard(): BoardTile[] {
     // Section 5: Bladder (36-39)
     else if (base.section === 'Bladder') {
       if (base.effectType === 'resource') {
-        const hChange = randomBetween(-4, 6, 2);
-        const sChange = randomBetween(-4, 6, 2);
+        const hChange = randomBetween(-4, 6, 2, randFn);
+        const sChange = randomBetween(-4, 6, 2, randFn);
         statChange.hydration = hChange;
         statChange.sodium = sChange;
         effectText = `ประคองสมดุลก่อนขับถ่าย: ${hChange >= 0 ? '+' : ''}${hChange} 💧, ${sChange >= 0 ? '+' : ''}${sChange} 🧂`;

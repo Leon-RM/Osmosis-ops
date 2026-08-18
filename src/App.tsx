@@ -103,11 +103,15 @@ export const App: React.FC = () => {
         if (supabase) {
           const { data: r } = await supabase
             .from('rooms')
-            .select('current_player_index, phase, current_global_event')
+            .select('code, current_player_index, phase, current_global_event')
             .eq('id', onlineRoomId)
             .single();
 
           if (r && isSubscribed) {
+            if (r.code && r.code !== roomCode) {
+              setRoomCode(r.code);
+              setDynamicBoard(generateDynamicBoard(r.code));
+            }
             setCurrentPlayerIndex(r.current_player_index);
             setPhase(r.phase);
             if (r.current_global_event) {
@@ -144,6 +148,10 @@ export const App: React.FC = () => {
           { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `id=eq.${onlineRoomId}` },
           (payload: any) => {
             if (payload.new && isSubscribed) {
+              if (payload.new.code && payload.new.code !== roomCode) {
+                setRoomCode(payload.new.code);
+                setDynamicBoard(generateDynamicBoard(payload.new.code));
+              }
               setCurrentPlayerIndex(payload.new.current_player_index);
               setPhase(payload.new.phase);
               if (payload.new.current_global_event) {
@@ -174,7 +182,7 @@ export const App: React.FC = () => {
         supabase.removeChannel(channel);
       }
     };
-  }, [isOnline, onlineRoomId, myPlayerId]);
+  }, [isOnline, onlineRoomId, myPlayerId, roomCode]);
 
   // Sync to Supabase helper
   const syncOnline = useCallback(
@@ -192,7 +200,7 @@ export const App: React.FC = () => {
   );
 
   // ----------------------------------------------------
-  // START GAME FROM LOBBY (GENERATES NEW RANDOMIZED BOARD)
+  // START GAME FROM LOBBY (GENERATES DETERMINISTIC BOARD FROM ROOM SEED)
   // ----------------------------------------------------
   const handleStartGame = (
     initialPlayers: Player[],
@@ -201,12 +209,13 @@ export const App: React.FC = () => {
     roomId = '',
     localPlayerId = ''
   ) => {
-    // Generate a fresh procedural dynamic board with varied tile values!
-    const newBoard = generateDynamicBoard();
+    // Generate a synchronized dynamic board based on the room's unique code!
+    const effectiveCode = code || roomCode || 'OSMO88';
+    const newBoard = generateDynamicBoard(effectiveCode);
     setDynamicBoard(newBoard);
 
     setPlayers(initialPlayers);
-    setRoomCode(code);
+    setRoomCode(effectiveCode);
     setIsOnline(online);
     setOnlineRoomId(roomId || null);
     setMyPlayerId(localPlayerId || initialPlayers[0]?.id || '');
@@ -215,7 +224,7 @@ export const App: React.FC = () => {
     setAskedQuestionIds([]);
     setWinner(null);
     setLogs([]);
-    addLog('🚀 เกม Osmosis Ops เริ่มต้นขึ้นแล้ว! สุ่มค่าสถานะกระดานใหม่ประจำรอบเสร็จสมบูรณ์');
+    addLog(`🚀 เริ่มต้นการเดินทางหน่วยไต [Room ${effectiveCode}] — สุ่มและซิงค์กระดานตรงกันทุกคนแล้ว!`);
     setIsHowToPlayOpen(true);
 
     // Trigger Phase 1 Global Event
