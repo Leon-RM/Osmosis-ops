@@ -22,6 +22,8 @@ import { HowToPlayModal } from './components/modals/HowToPlayModal';
 import { GlobalEventModal } from './components/modals/GlobalEventModal';
 import { QuizModal } from './components/modals/QuizModal';
 import { GameOverModal } from './components/modals/GameOverModal';
+import { DiceRollModal } from './components/modals/DiceRollModal';
+import { Footer } from './components/Footer';
 import {
   Scroll, Dices, ShieldCheck, X, Droplet, Percent,
   ChevronUp, User, Pill, Heart, ArrowUp, ArrowDown
@@ -49,6 +51,9 @@ export const App: React.FC = () => {
   const [isMobileCardsOpen, setIsMobileCardsOpen] = useState(false);
   const [isMobileDiceRolling, setIsMobileDiceRolling] = useState(false);
   const [mobileDiceValue, setMobileDiceValue] = useState<number>(1);
+  const [isDiceModalOpen, setIsDiceModalOpen] = useState(false);
+  const [isDiceModalRolling, setIsDiceModalRolling] = useState(false);
+  const [modalDiceValue, setModalDiceValue] = useState<number>(1);
   const [currentEvent, setCurrentEvent] = useState<GlobalEvent | null>(null);
   const [currentQuiz, setCurrentQuiz] = useState<QuizQuestion | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
@@ -292,22 +297,33 @@ export const App: React.FC = () => {
     }, 180);
   };
 
-  // Mobile Dice Roll Animation
+  // Mobile Dice Roll Animation with Pop-up Graphic
   const handleMobileDiceRoll = () => {
     if (!activePlayer || phase !== 'ROLL' || !isMyTurn || isMobileDiceRolling) return;
     setIsMobileDiceRolling(true);
+    setIsDiceModalOpen(true);
+    setIsDiceModalRolling(true);
     sounds.playDiceRoll();
 
     let count = 0;
     const timer = setInterval(() => {
-      setMobileDiceValue(Math.floor(Math.random() * 6) + 1);
+      const tempVal = Math.floor(Math.random() * 6) + 1;
+      setMobileDiceValue(tempVal);
+      setModalDiceValue(tempVal);
       count++;
       if (count > 12) {
         clearInterval(timer);
         const finalVal = Math.floor(Math.random() * 6) + 1;
         setMobileDiceValue(finalVal);
+        setModalDiceValue(finalVal);
+        setIsDiceModalRolling(false);
         setIsMobileDiceRolling(false);
-        handleRollDice(finalVal);
+
+        // Display rolled dice face for 750ms before stepping
+        setTimeout(() => {
+          setIsDiceModalOpen(false);
+          handleRollDice(finalVal);
+        }, 750);
       }
     }, 80);
   };
@@ -680,6 +696,9 @@ export const App: React.FC = () => {
         </div>
       </main>
 
+      {/* Group Members & Project Credits Footer */}
+      <Footer />
+
       {/* ======================================================== */}
       {/* MOBILE RICH FLOATING CONTROL PANEL & QUICK ACTION DOCK   */}
       {/* ======================================================== */}
@@ -989,6 +1008,13 @@ export const App: React.FC = () => {
       <GlobalEventModal event={currentEvent} onConfirm={handleConfirmEvent} />
       <QuizModal question={currentQuiz} onAnswer={handleQuizAnswer} />
       <GameOverModal winner={winner} players={players} onPlayAgain={() => setInLobby(true)} />
+      <DiceRollModal
+        isOpen={isDiceModalOpen}
+        diceValue={modalDiceValue}
+        isRolling={isDiceModalRolling}
+        playerName={activePlayer?.name || 'Player'}
+        playerColor={activePlayer?.color}
+      />
     </div>
   );
 };
