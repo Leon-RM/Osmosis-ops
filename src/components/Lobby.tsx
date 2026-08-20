@@ -311,7 +311,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between p-3 sm:p-5 relative overflow-x-hidden" style={{ background: 'var(--bg-page)' }}>
+    <div className="min-h-screen w-full flex flex-col items-center justify-start py-6 sm:py-8 px-3 sm:px-5 relative" style={{ background: 'var(--bg-page)' }}>
 
       {/* Decorative blobs */}
       <div className="absolute top-[-80px] left-[-80px] w-72 h-72 rounded-full pointer-events-none"
@@ -319,7 +319,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
       <div className="absolute bottom-[-60px] right-[-60px] w-64 h-64 rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(224,92,139,0.15) 0%, transparent 70%)' }} />
 
-      <div className="relative max-w-lg w-full space-y-4 my-auto">
+      <div className="relative max-w-lg w-full space-y-4">
 
         {/* Title Banner */}
         <div
@@ -616,7 +616,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
                     </span>
                   </div>
 
-                  <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+                  <div className="space-y-2">
                     {onlinePlayers.map((p, i) => (
                       <div
                         key={p.id}
@@ -716,7 +716,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
             </div>
 
             {/* Player List */}
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div className="space-y-2">
               {players.map((p, i) => (
                 <div
                   key={p.id}
