@@ -13,6 +13,7 @@ import {
   startOnlineGame,
   leaveOnlineRoom
 } from '../services/supabaseClient';
+import { Footer } from './Footer';
 
 interface LobbyProps {
   onStartGame: (players: Player[], roomCode: string, isOnline?: boolean, roomId?: string, myPlayerId?: string) => void;
@@ -310,7 +311,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-3 sm:p-5 relative overflow-hidden" style={{ background: 'var(--bg-page)' }}>
+    <div className="min-h-screen flex flex-col items-center justify-between p-3 sm:p-5 relative overflow-x-hidden" style={{ background: 'var(--bg-page)' }}>
 
       {/* Decorative blobs */}
       <div className="absolute top-[-80px] left-[-80px] w-72 h-72 rounded-full pointer-events-none"
@@ -318,7 +319,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
       <div className="absolute bottom-[-60px] right-[-60px] w-64 h-64 rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(224,92,139,0.15) 0%, transparent 70%)' }} />
 
-      <div className="relative max-w-lg w-full space-y-4">
+      <div className="relative max-w-lg w-full space-y-4 my-auto">
 
         {/* Title Banner */}
         <div
@@ -807,6 +808,9 @@ export const Lobby: React.FC<LobbyProps> = ({ onStartGame }) => {
           </div>
         )}
       </div>
+
+      {/* Group Members & Project Credits Footer */}
+      <Footer />
 
       {/* SQL Schema Instructions Modal */}
       {showSqlModal && (
